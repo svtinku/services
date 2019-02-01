@@ -17,13 +17,30 @@ final class RegisterService extends Services
 	}
 	function post($payload)
 	{
-//		$db->executeQuery("insert into user(emailId,phone,name,city,category_id) values('".$db->escape($payload->email)."','".$db->escape($payload->phone)."','".$db->escape($payload->name)."','".$db->escape($payload->city)."','1')");
-		$stmt = $this->db->prepareQuery("insert into user(emailId,phone,name,city,category_id) values(?,?,?,?,?)");
-		$stmt->bind_param('ssssd', $payload->email, $payload->phone, $payload->name, $payload->city, $payload->categ);
-		$stmt->execute();
-		$stmt->close();
-		$this->db->commit();
-		return $payload;
+		$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId= ? or phone= ?");
+        $stmt->bind_param('ss', $payload->email, $payload->phone);
+        $stmt->execute();
+        $this->db->commit();
+        $result = $stmt->get_result();
+        while ($rows = $result->fetch_assoc()) 
+        {
+            if($rows['emailId']!=$payload->email || $rows['phone']!=$payload->phone)    
+            {
+				//$db->executeQuery("insert into user(emailId,phone,name,city,category_id) values('".$db->escape($payload->email)."','".$db->escape($payload->phone)."','".$db->escape($payload->name)."','".$db->escape($payload->city)."','1')");
+				$stmt = $this->db->prepareQuery("insert into user(emailId,phone,name,city,category_id) values(?,?,?,?,?)");
+				$stmt->bind_param('ssssd', $payload->email, $payload->phone, $payload->name, $payload->city, $payload->categ);
+				$stmt->execute();
+				$stmt->close();
+				$this->db->commit();
+				return $payload;
+			}
+			else
+			{
+				echo "Already existed";
+				return $payload;
+				
+			}
+		}
 	}
 }
 ?>
