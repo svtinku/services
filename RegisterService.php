@@ -17,29 +17,24 @@ final class RegisterService extends Services
 	}
 	function post($payload)
 	{
-		$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId= ? or phone= ?");
+		$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId=? or phone=?");
         $stmt->bind_param('ss', $payload->email, $payload->phone);
-        $stmt->execute();
-        $this->db->commit();
-        $result = $stmt->get_result();
-        while ($rows = $result->fetch_assoc()) 
-        {
-            if($rows['emailId']!=$payload->email || $rows['phone']!=$payload->phone)    
-            {
-				//$db->executeQuery("insert into user(emailId,phone,name,city,category_id) values('".$db->escape($payload->email)."','".$db->escape($payload->phone)."','".$db->escape($payload->name)."','".$db->escape($payload->city)."','1')");
-				$stmt = $this->db->prepareQuery("insert into user(emailId,phone,name,city,category_id) values(?,?,?,?,?)");
-				$stmt->bind_param('ssssd', $payload->email, $payload->phone, $payload->name, $payload->city, $payload->categ);
-				$stmt->execute();
-				$stmt->close();
-				$this->db->commit();
-				return $payload;
-			}
-			else
-			{
-				echo "Already existed";
-				return $payload;
-				
-			}
+		$stmt->execute();
+		$stmt->store_result();
+		if($stmt->num_rows > 0)
+		{
+			echo "Alrealy exists";
+			return $payload;
+		}
+		else
+		{	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*_";
+			$password=$payload->pwd = substr( str_shuffle( $chars ), 0, 4 );
+			$stmt = $this->db->prepareQuery("insert into user(emailId,phone,name,city,category_id,password) values(?,?,?,?,?,?)");
+			$stmt->bind_param('ssssds', $payload->email, $payload->phone, $payload->name, $payload->city, $payload->categ, $payload->pwd);
+			$stmt->execute();
+			$stmt->close();
+			$this->db->commit();
+			return $payload;
 		}
 	}
 }
