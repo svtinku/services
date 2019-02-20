@@ -18,7 +18,7 @@ final class RegisterService extends Services
 	}
 	function post($payload)
 	{
-		$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId=? or phone=?");
+		/*$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId=? or phone=?");
         $stmt->bind_param('ss', $payload->email, $payload->phone);
 		$stmt->execute();
 		$stmt->store_result();
@@ -26,27 +26,20 @@ final class RegisterService extends Services
 		{
 			echo "Alrealy exists";
 			return $payload;
-		
 		}
 		else
-		{	
-			$to      = '$email';
-			$subject = 'the subject';
-			$message = '$password';
-			$headers = 'From: bizvoice.india@gmail.com' . "\r\n" .'Reply-To: $email' . "\r\n" .'X-Mailer: PHP/' . phpversion();
-
-			mail($to, $subject, $message, $headers);
-
+		{*/	
 			$passcode = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*_";
 			$password=$payload->pwd = substr( str_shuffle( $passcode ), 0, 19 );
-			$stmt = $this->db->prepareQuery("insert into user(emailId,phone,name,city,category_id,password) values(?,?,?,?,?,?)");
-			$stmt->bind_param('ssssds', $payload->email, $payload->phone, $payload->name, $payload->city, $payload->categ, $payload->pwd);
+			$stmt = $this->db->prepareQuery("insert into user(name,emailId,phone,city,category_id,password) values(?,?,?,?,?,?)");
+			$stmt->bind_param('ssssds', $payload->name, $payload->email, $payload->phone, $payload->city, $payload->categ, $payload->pwd);
 			$stmt->execute();
 			$stmt->close();
 			$this->db->commit();
+			$to = 'email';
+			mail("$to","You have successfully created Real Estate template ","From: bizvoice.india@gmail.com");
 			return $payload;
-		
-		}
+		/*}*/
 	}
 }
 ?>
