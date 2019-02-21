@@ -35,7 +35,7 @@ final class RegisterService extends Services
 			$stmt->bind_param('ssssds', $payload->name, $payload->email, $payload->phone, $payload->city, $payload->categ, $payload->pwd);
 			$sender = 'bizvoice.india@gmail.com';
 			$to = $payload->email;
-			//$body = "";;
+			//$body = "";
 			
 			if(mail("$to",'Welcome','Congratulations you have created Reas Estate Template Successfully..!',"$sender"))
 			{
