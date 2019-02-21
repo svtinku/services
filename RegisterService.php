@@ -33,7 +33,6 @@ final class RegisterService extends Services
 			$password=$payload->pwd = substr( str_shuffle( $passcode ), 0, 19 );
 			$stmt = $this->db->prepareQuery("insert into user(name,emailId,phone,city,category_id,password) values(?,?,?,?,?,?)");
 			$stmt->bind_param('ssssds', $payload->name, $payload->email, $payload->phone, $payload->city, $payload->categ, $payload->pwd);
-			$sender = 'bizvoice.india@gmail.com';
 			$to = $payload->email;
 			$name = $payload->name;
 			$email = $payload->email;
@@ -41,24 +40,24 @@ final class RegisterService extends Services
 			$city = $payload->city;
 			$categ = $payload->categ;
 			$subject = "Welcome";
-			$message = "
-			Congratulation you have created $categ Templage successfully..! 
+			$body =" 
 			This is Your Details:
-			Name : $name;
-			Email Id: $email;
-			Phone Number: $phone;
-			Your City is: $city;
+			Name : $name
+			Email Id: $email
+			Phone Number: $phone
+			City: $city
 			";
-			if(mail("$to","$subject","$message"))
+			$message="Congratulation you have created awesome '$categ' Template successfully..!";
+			if(mail("$to","$subject","$body","$message"))
 			{
-			echo "Mail sent";
+				echo "Mail sent";
+				$stmt->execute();
 			}
 			else
 			{
-			echo "Error: Message not accepted";
+				echo "Error: Message not accepted";
+				$stmt->close();
 			}
-			$stmt->execute();
-			$stmt->close();
 			$this->db->commit();
 			return $payload;
 		}
