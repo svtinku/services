@@ -39,7 +39,7 @@ final class RegisterService extends Services
 			$phone = $payload->phone;
 			$city = $payload->city;
 			$categ = $payload->categ;
-			//$header = "";
+			//$header = ""/n/n;
 			$subject = "Welcome";
 			$body =" 
 			This is Your Details:
