@@ -33,6 +33,7 @@ final class RegisterService extends Services
 			$password=$payload->pwd = substr( str_shuffle( $passcode ), 0, 19 );
 			$stmt = $this->db->prepareQuery("insert into user(name,emailId,phone,city,category_id,password) values(?,?,?,?,?,?)");
 			$stmt->bind_param('ssssds', $payload->name, $payload->email, $payload->phone, $payload->city, $payload->categ, $payload->pwd);
+<<<<<<< HEAD
 			$to = $payload->email;
 			$name = $payload->name;
 			$email = $payload->email;
@@ -58,6 +59,22 @@ final class RegisterService extends Services
 				echo "Error: Message not accepted";
 				$stmt->close();
 			}
+=======
+			$sender = 'bizvoice.india@gmail.com';
+			$to = $payload->email;
+			//$body = "";;
+			
+			if(mail("$to",'Welcome','Congratulations you have created Reas Estate Template Successfully..!',"$sender"))
+			{
+			echo "Mail sent";
+			}
+			else
+			{
+			echo "Error: Message not accepted";
+			}
+			$stmt->execute();
+			$stmt->close();
+>>>>>>> 511ddcfe592c51342a3911cded65aac33280cc1c
 			$this->db->commit();
 			return $payload;
 		}
