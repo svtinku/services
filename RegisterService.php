@@ -18,7 +18,7 @@ final class RegisterService extends Services
 	}
 	function post($payload)
 	{
-		/*$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId=? or phone=?");
+		$stmt = $this->db->prepareQuery("SELECT emailId,phone FROM user WHERE emailId=? or phone=?");
         $stmt->bind_param('ss', $payload->email, $payload->phone);
 		$stmt->execute();
 		$stmt->store_result();
@@ -28,18 +28,28 @@ final class RegisterService extends Services
 			return $payload;
 		}
 		else
-		{*/	
+		{
 			$passcode = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*_";
 			$password=$payload->pwd = substr( str_shuffle( $passcode ), 0, 19 );
 			$stmt = $this->db->prepareQuery("insert into user(name,emailId,phone,city,category_id,password) values(?,?,?,?,?,?)");
 			$stmt->bind_param('ssssds', $payload->name, $payload->email, $payload->phone, $payload->city, $payload->categ, $payload->pwd);
+			$sender = 'bizvoice.india@gmail.com';
+			$to = $payload->email;
+			//$body = "";;
+			
+			if(mail("$to",'Welcome','Congratulations you have created Reas Estate Template Successfully..!',"$sender"))
+			{
+			echo "Mail sent";
+			}
+			else
+			{
+			echo "Error: Message not accepted";
+			}
 			$stmt->execute();
 			$stmt->close();
 			$this->db->commit();
-			$to = 'email';
-			mail("$to","You have successfully created Real Estate template ","From: bizvoice.india@gmail.com");
 			return $payload;
-		/*}*/
+		}
 	}
 }
 ?>
